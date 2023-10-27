@@ -27,3 +27,5 @@ services:
     environment:
       - POSTGRES_PASSWORD=12345678
     container_name: shoppan-dev-db
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data

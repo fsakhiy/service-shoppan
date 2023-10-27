@@ -10,4 +10,9 @@ export class UserController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
+
+  @Get('newroute')
+  newRoute() {
+    return 'this is just a test route for docker compose';
+  }
 }

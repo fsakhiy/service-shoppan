@@ -1,6 +1,7 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('user')
 export class UserController {
@@ -14,5 +15,10 @@ export class UserController {
   @Get('newroute')
   newRoute() {
     return 'testing the persistent postgres data';
+  }
+
+  @Post('login')
+  login(@Body() loginDto: LoginDto) {
+    return this.userService.login(loginDto);
   }
 }

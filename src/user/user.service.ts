@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
@@ -8,10 +12,14 @@ import {
   SuccessResponse,
 } from 'src/common/response/response.dto';
 import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private jwtService: JwtService,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 12);
@@ -51,20 +59,28 @@ export class UserService {
 
     return new SuccessResponse('data created');
   }
-  
-  async login(loginDto:LoginDto) {
-    const userInfo= await this.prismaService.user.findUnique({
-      where:{
-        email:loginDto.email,
-      }
-    })
-    if(!userInfo){
-      throw new UnauthorizedException(new FailedResponse('Invalid Credentials', {credentials:false}))
+
+  async login(loginDto: LoginDto) {
+    const userInfo = await this.prismaService.user.findUnique({
+      where: {
+        email: loginDto.email,
+      },
+    });
+    if (!userInfo) {
+      throw new UnauthorizedException(
+        new FailedResponse('Invalid Credentials', { credentials: false }),
+      );
     }
-    if(await bcrypt.compare(loginDto.password, userInfo.password)){
-      return 'Kamu Berhasil Login'
-    }else{
-      throw new UnauthorizedException(new FailedResponse('Invalid Credentials', {credentials:false}))
+    if (await bcrypt.compare(loginDto.password, userInfo.password)) {
+      const payload = {
+        uuid: userInfo.uuid,
+      };
+      const token = await this.jwtService.sign(payload);
+      return new SuccessResponse('Login successfull', { token: token });
+    } else {
+      throw new UnauthorizedException(
+        new FailedResponse('Invalid Credentials', { credentials: false }),
+      );
     }
   }
 }

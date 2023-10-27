@@ -5,10 +5,25 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nest-docker-postgres
+    restart: always
+    container_name: service-shoppan-dev
     environment:
-      - PORT=${PORT}
+      - PORT=3300
+      - DATABASE_URL=postgres://postgres:12345678@db:5432/postgres
     ports:
       - '3300:3300'
     volumes:
       - ./src:/app/src
+      - ./public:/app/public
+      - /app/node_modules
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - '3600:5432'
+    environment:
+      - POSTGRES_PASSWORD=12345678
+    container_name: shoppan-dev-db

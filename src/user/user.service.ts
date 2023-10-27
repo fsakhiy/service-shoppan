@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
@@ -7,6 +7,7 @@ import {
   FailedResponse,
   SuccessResponse,
 } from 'src/common/response/response.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class UserService {
@@ -49,5 +50,21 @@ export class UserService {
     }
 
     return new SuccessResponse('data created');
+  }
+  
+  async login(loginDto:LoginDto) {
+    const userInfo= await this.prismaService.user.findUnique({
+      where:{
+        email:loginDto.email,
+      }
+    })
+    if(!userInfo){
+      throw new UnauthorizedException(new FailedResponse('Invalid Credentials', {credentials:false}))
+    }
+    if(await bcrypt.compare(loginDto.password, userInfo.password)){
+      return 'Kamu Berhasil Login'
+    }else{
+      throw new UnauthorizedException(new FailedResponse('Invalid Credentials', {credentials:false}))
+    }
   }
 }

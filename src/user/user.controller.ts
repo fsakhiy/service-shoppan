@@ -13,6 +13,6 @@ export class UserController {
 
   @Get('newroute')
   newRoute() {
-    return 'this is just a test route for docker compose';
+    return 'testing the persistent postgres data';
   }
 }

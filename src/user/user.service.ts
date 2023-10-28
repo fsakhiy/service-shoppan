@@ -31,6 +31,7 @@ export class UserService {
           email: createUserDto.email,
           password: hashedPassword,
           photo: createUserDto.photo,
+          school: createUserDto.school,
         },
       });
     } catch (e) {

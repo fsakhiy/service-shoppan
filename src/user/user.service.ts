@@ -13,6 +13,7 @@ import {
 } from 'src/common/response/response.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { OpenShopDto } from './dto/open-shop.dto';
 
 @Injectable()
 export class UserService {
@@ -83,5 +84,55 @@ export class UserService {
         new FailedResponse('Invalid Credentials', { credentials: false }),
       );
     }
+  }
+
+  async openShop(openShop: OpenShopDto, userId: string) {
+    try {
+      await this.prismaService.seller.create({
+        data: {
+          name: openShop.name,
+          userId: userId,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2002') {
+          const shopStatus: any = e.meta?.target;
+          if (shopStatus.includes('userId')) {
+            throw new BadRequestException(
+              new FailedResponse('cannot create shop', {
+                exists: true,
+                created: true,
+                code: e.code,
+                message: e.message,
+                meta: e.meta?.target,
+              }),
+            );
+          } else {
+            throw new BadRequestException(
+              new FailedResponse('cannot create shop', {
+                exists: true,
+                created: false,
+                code: e.code,
+                message: e.message,
+                meta: e.meta?.target,
+              }),
+            );
+          }
+        } else {
+          throw new BadRequestException(
+            new FailedResponse('cannot create data', {
+              exists: false,
+              created: false,
+              code: e.code,
+              message: e.message,
+              meta: e.meta,
+            }),
+          );
+        }
+      }
+    }
+
+    return new SuccessResponse('shop created');
   }
 }

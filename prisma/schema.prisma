@@ -36,21 +36,21 @@ model Seller {
 }
 
 model Product {
-  id         Int      @id @default(autoincrement())
-  uuid       String   @unique @default(uuid())
-  name       String
-  slogan     String
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [uuid])
-  sellerId   String
-  seller     Seller   @relation(fields: [sellerId], references: [uuid])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  uuid        String   @unique @default(uuid())
+  name        String
+  description String
+  slogan      String
+  category    CATEGORY
+  price       Int
+  photo       String   @default("item-placeholder.jpg")
+  sellerId    String
+  seller      Seller   @relation(fields: [sellerId], references: [uuid])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-model Category {
-  id       Int       @id @default(autoincrement())
-  uuid     String    @unique @default(uuid())
-  Name     String
-  products Product[]
+enum CATEGORY {
+  FOOD
+  GOODS
 }

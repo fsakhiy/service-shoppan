@@ -1,8 +1,7 @@
 export class Meta {
-  total: number;
-  lastPage: number;
   currentPage: number;
-  prevPage: number;
-  prev: number | null;
-  next: number | null;
+  pageSize: number;
+  totalData: number;
+  prevPage: number | null;
+  nextPage: number | null;
 }

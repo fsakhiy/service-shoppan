@@ -14,6 +14,7 @@ import {
 import { Product } from './entities/product.entity';
 import { PurchaseProductDto } from './dto/purchase-product.dto';
 import { PaginationRequest } from './dto/pagination-request.dto';
+import { Meta } from 'src/common/response/meta.dto';
 
 @Injectable()
 export class ProductService {
@@ -74,6 +75,8 @@ export class ProductService {
       skip: skipSize,
     });
 
+    const totalItems = await this.prismaService.product.count();
+
     const formattedItems: Product[] = [];
     items.forEach((item) => {
       const formattedItem: Product = {
@@ -87,7 +90,18 @@ export class ProductService {
       };
       formattedItems.push(formattedItem);
     });
-    return new SuccessResponse('data retrieved', formattedItems);
+
+    const totalPages = Math.ceil(totalItems / size);
+
+    const meta: Meta = {
+      currentPage: page,
+      pageSize: size,
+      totalData: totalItems,
+      prevPage: page > 1 ? page - 1 : null,
+      nextPage: page < totalPages ? page + 1 : null,
+    };
+
+    return new SuccessResponse('data retrieved', formattedItems, meta);
   }
 
   async findOne(id: string) {

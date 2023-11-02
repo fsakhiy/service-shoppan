@@ -13,4 +13,6 @@ export class CreateUserDto {
   photo: string;
   @IsNotEmpty()
   school: string;
+  @IsNotEmpty()
+  address: string;
 }

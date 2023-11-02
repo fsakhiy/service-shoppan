@@ -13,6 +13,7 @@ import {
 } from 'src/common/response/response.dto';
 import { Product } from './entities/product.entity';
 import { PurchaseProductDto } from './dto/purchase-product.dto';
+import { PaginationRequest } from './dto/pagination-request.dto';
 
 @Injectable()
 export class ProductService {
@@ -60,12 +61,19 @@ export class ProductService {
     return new SuccessResponse('successfully created data');
   }
 
-  async findAll() {
+  async findAll(query: PaginationRequest) {
+    const page = Number.isNaN(query.page - 0) ? 1 : query.page - 0;
+    const size = Number.isNaN(query.size - 0) ? 100 : query.size - 0;
+    const skipSize = (page - 1) * size;
+
     const items = await this.prismaService.product.findMany({
       include: {
         seller: true,
       },
+      take: size,
+      skip: skipSize,
     });
+
     const formattedItems: Product[] = [];
     items.forEach((item) => {
       const formattedItem: Product = {

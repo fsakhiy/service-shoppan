@@ -9,6 +9,7 @@ import {
   UseGuards,
   UsePipes,
   Request,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -16,6 +17,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { ValidationPipe } from 'src/validation/validation.pipe';
 import { PurchaseProductDto } from './dto/purchase-product.dto';
+import { PaginationRequest } from './dto/pagination-request.dto';
 
 @Controller('product')
 export class ProductController {
@@ -29,8 +31,9 @@ export class ProductController {
   }
 
   @Get('all')
-  findAll() {
-    return this.productService.findAll();
+  findAll(@Query() query: PaginationRequest) {
+    return this.productService.findAll(query);
+    // return `page: ${query.page}, size: ${query.size}`;
   }
 
   @Get('uuid/:uuid')

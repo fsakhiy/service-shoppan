@@ -158,7 +158,7 @@ export class ProductService {
       );
     }
 
-    const message = `Halo saya mau beli produk ${productData.name} sebanyak ${buyProduct.quantity} buah. Apakah produk ini ready?`;
+    const message = `Halo!\n saya tertarik dengan produk ${productData.name}. dan saya berniat untuk membeli sebanyak ${buyProduct.quantity} buah.\nApakah produk ini ready?`;
     const encodedMessage = encodeURI(message);
     const link = `https://wa.me/${productData.seller.user.phone}?text=${encodedMessage}`;
 

@@ -10,6 +10,7 @@ services:
     environment:
       - PORT=3300
       - DATABASE_URL=postgres://postgres:12345678@db:5432/postgres
+      - JWT_SECRET=804621c271b74ae3e2772b3c120b9eb362c17dba1b7bee7930329e2af02dec26a418d28016c7737fa8036459078d3d5deec1bd07c392ba2a816fbab4514496d7
     ports:
       - '3300:3300'
     volumes:

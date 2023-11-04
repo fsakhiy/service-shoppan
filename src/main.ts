@@ -6,5 +6,3 @@ async function bootstrap() {
   await app.listen(process.env.PORT);
 }
 bootstrap();
-
-// test for rebuilding image

@@ -12,7 +12,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { ValidationPipe } from 'src/validation/validation.pipe';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { OpenShopDto } from './dto/open-shop.dto';
+// import { OpenShopDto } from './dto/open-shop.dto';
 
 @Controller('user')
 export class UserController {
@@ -41,10 +41,10 @@ export class UserController {
     return req.user.uuid;
   }
 
-  @UseGuards(AuthGuard)
-  @Post('open-shop')
-  @UsePipes(ValidationPipe)
-  createShop(@Body() createShop: OpenShopDto, @Request() req) {
-    return this.userService.openShop(createShop, req.user.uuid);
-  }
+  // @UseGuards(AuthGuard)
+  // @Post('open-shop')
+  // @UsePipes(ValidationPipe)
+  // createShop(@Body() createShop: OpenShopDto, @Request() req) {
+  //   return this.userService.openShop(createShop, req.user.uuid);
+  // }
 }

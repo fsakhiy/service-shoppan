@@ -21,21 +21,6 @@ export class ProductService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createProductDto: CreateProductDto, userId: string) {
-    const shop = await this.prismaService.seller.findUnique({
-      where: {
-        userId: userId,
-      },
-    });
-
-    if (!shop) {
-      throw new BadRequestException(
-        new FailedResponse("seller doesn't exists", {
-          sellerExists: false,
-          message: 'you need to open up a shop',
-        }),
-      );
-    }
-
     try {
       await this.prismaService.product.create({
         data: {
@@ -44,7 +29,7 @@ export class ProductService {
           price: createProductDto.price,
           slogan: createProductDto.slogan,
           description: createProductDto.description,
-          sellerId: shop.uuid,
+          sellerId: userId,
         },
       });
     } catch (e) {
@@ -166,11 +151,7 @@ export class ProductService {
         uuid: buyProduct.productId,
       },
       include: {
-        seller: {
-          include: {
-            user: true,
-          },
-        },
+        seller: true,
       },
     });
 
@@ -182,7 +163,7 @@ export class ProductService {
 
     const message = `Halo!\n saya tertarik dengan produk ${productData.name}. dan saya berniat untuk membeli sebanyak ${buyProduct.quantity} buah.\nApakah produk ini ready?`;
     const encodedMessage = encodeURI(message);
-    const link = `https://wa.me/${productData.seller.user.phone}?text=${encodedMessage}`;
+    const link = `https://wa.me/${productData.seller.phone}?text=${encodedMessage}`;
 
     return new SuccessResponse('success', { link: link });
   }

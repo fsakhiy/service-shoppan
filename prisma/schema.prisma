@@ -11,29 +11,18 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  uuid      String   @unique @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  phone     String   @unique
-  photo     String?  @default("placeholder.jpg")
-  school    String
-  address   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Seller    Seller?
-}
-
-model Seller {
   id        Int       @id @default(autoincrement())
   uuid      String    @unique @default(uuid())
   name      String
-  userId    String    @unique
-  user      User      @relation(fields: [userId], references: [uuid])
-  product   Product[]
+  email     String    @unique
+  password  String
+  phone     String    @unique
+  photo     String?   @default("placeholder.jpg")
+  school    String
+  address   String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  Product   Product[]
 }
 
 model Product {
@@ -46,7 +35,7 @@ model Product {
   price       Int
   photo       String   @default("item-placeholder.jpg")
   sellerId    String
-  seller      Seller   @relation(fields: [sellerId], references: [uuid])
+  seller      User     @relation(fields: [sellerId], references: [uuid])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

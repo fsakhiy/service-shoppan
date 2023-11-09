@@ -14,6 +14,7 @@ import {
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { OpenShopDto } from './dto/open-shop.dto';
+import { Profile } from './entities/profile.entity';
 
 @Injectable()
 export class UserService {
@@ -135,5 +136,20 @@ export class UserService {
     }
 
     return new SuccessResponse('shop created');
+  }
+
+  async getProfile(uuid:string) {
+    const profile = await this.prismaService.user.findUnique({
+      where:{
+        uuid:uuid
+      }
+    })
+    const profileFormatted:Profile = {
+      name:profile.name,
+      photo:profile.photo,
+      address:profile.address,
+      school:profile.school,
+    }
+    return new SuccessResponse('data retrieve', profileFormatted)
   }
 }

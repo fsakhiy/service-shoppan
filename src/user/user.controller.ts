@@ -38,7 +38,8 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    return req.user.uuid;
+    // return req.user.uuid;
+    return this.userService.getProfile(req.user.uuid);
   }
 
   @UseGuards(AuthGuard)

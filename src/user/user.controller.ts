@@ -6,12 +6,14 @@ import {
   UsePipes,
   UseGuards,
   Request,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { ValidationPipe } from 'src/validation/validation.pipe';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
 // import { OpenShopDto } from './dto/open-shop.dto';
 
 @Controller('user')
@@ -40,6 +42,13 @@ export class UserController {
   getProfile(@Request() req) {
     // return req.user.uuid;
     return this.userService.getProfile(req.user.uuid);
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('update')
+  @UsePipes(ValidationPipe)
+  updateProfile(@Body() updateUserDto: UpdateUserDto, @Request() req) {
+    return this.userService.updateProfile(updateUserDto, req.user.uuid);
   }
 
   // @UseGuards(AuthGuard)

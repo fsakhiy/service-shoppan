@@ -14,6 +14,7 @@ import {
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Profile } from './entities/profile.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -100,5 +101,44 @@ export class UserService {
       school: profile.school,
     };
     return new SuccessResponse('data retrieve', profileFormatted);
+  }
+
+  async updateProfile(updateUser: UpdateUserDto, userId: string) {
+    try {
+      await this.prismaService.user.update({
+        where: {
+          uuid: userId,
+        },
+        data: {
+          name: updateUser.name,
+          photo: updateUser.photo,
+          address: updateUser.address,
+          school: updateUser.school,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2002') {
+          throw new BadRequestException(
+            new FailedResponse('cannot create data', {
+              exists: true,
+              code: e.code,
+              message: e.message,
+              meta: e.meta?.target,
+            }),
+          );
+        } else {
+          throw new BadRequestException(
+            new FailedResponse('cannot create data', {
+              exists: false,
+              code: e.code,
+              message: e.message,
+              meta: e.meta,
+            }),
+          );
+        }
+      }
+    }
+    return new SuccessResponse('data updated');
   }
 }

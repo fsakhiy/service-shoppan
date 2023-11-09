@@ -7,6 +7,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { PrismaService } from './prisma/prisma.service';
 import { ProductModule } from './product/product.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ProductModule } from './product/product.module';
       rootPath: join(__dirname, '..', 'public'),
     }),
     ProductModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

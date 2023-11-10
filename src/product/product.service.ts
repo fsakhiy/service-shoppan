@@ -167,8 +167,4 @@ export class ProductService {
 
     return new SuccessResponse('success', { link: link });
   }
-
-  async uploadFile(file: any) {
-    return file.filename;
-  }
 }

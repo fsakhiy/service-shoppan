@@ -1,8 +1,5 @@
 import {
   Controller,
-  FileTypeValidator,
-  MaxFileSizeValidator,
-  ParseFilePipe,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -15,20 +12,11 @@ import { SuccessResponse } from 'src/common/response/response.dto';
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  uploadFile(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 20000000 }),
-          new FileTypeValidator({ fileType: 'image/jpeg' }),
-        ],
-      }),
-    )
-    file: Express.Multer.File,
-  ) {
-    console.log(file);
-    return new SuccessResponse('file uploaded');
+  @Post('photo/upload')
+  @UseInterceptors(FileInterceptor('photo'))
+  uploadPhoto(@UploadedFile() file) {
+    const uploadedFileName = file.filename;
+
+    return new SuccessResponse('file uploaded', { path: uploadedFileName });
   }
 }

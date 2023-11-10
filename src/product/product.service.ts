@@ -30,6 +30,7 @@ export class ProductService {
           slogan: createProductDto.slogan,
           description: createProductDto.description,
           sellerId: userId,
+          photo: createProductDto.photo,
         },
       });
     } catch (e) {

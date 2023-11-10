@@ -10,6 +10,8 @@ import {
   UsePipes,
   Request,
   Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -18,6 +20,8 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { ValidationPipe } from 'src/validation/validation.pipe';
 import { PurchaseProductDto } from './dto/purchase-product.dto';
 import { PaginationRequest } from './dto/pagination-request.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { SuccessResponse } from 'src/common/response/response.dto';
 
 @Controller('product')
 export class ProductController {
@@ -56,5 +60,13 @@ export class ProductController {
   @UsePipes(ValidationPipe)
   getWALink(@Body() buyProduct: PurchaseProductDto) {
     return this.productService.generateWALink(buyProduct);
+  }
+
+  @Post('photo/upload')
+  @UseInterceptors(FileInterceptor('photo'))
+  async uploadPhoto(@UploadedFile() file) {
+    const uploadedFileName = await this.productService.uploadFile(file);
+
+    return new SuccessResponse('file uploaded', { path: uploadedFileName });
   }
 }

@@ -43,6 +43,10 @@ export class ProductService {
           }),
         );
       }
+
+      throw new BadRequestException(
+        new FailedResponse('cannot create data', e),
+      );
     }
 
     return new SuccessResponse('successfully created data');
